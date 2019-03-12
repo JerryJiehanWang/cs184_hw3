@@ -590,7 +590,6 @@ Spectrum PathTracer::estimate_direct_lighting_importance(const Ray& r, const Int
       test_ray.max_t = distToLight;
       Intersection test_isect = Intersection();
 
-      //cout<<bvh -> intersect(test_ray, &test_isect)<<endl;
       if (!bvh -> intersect(test_ray, &test_isect)) {
         Spectrum reflectence = isect.bsdf->f(w_out, w_in);
         L_temp += (radiance_i * reflectence * cos_theta(w_in)) / pdf;
@@ -692,10 +691,10 @@ Spectrum PathTracer::est_radiance_global_illumination(const Ray &r) {
 
   // TODO (Part 4): Accumulate the "direct" and "indirect" 
   // parts of global illumination into L_out rather than just direct
-  L_out = estimate_direct_lighting_importance(r, isect);
-  //gL_out = estimate_direct_lighting_hemisphere(r, isect);
-  //L_out = at_least_one_bounce_radiance(r, isect) + zero_bounce_radiance(r, isect);
-  return L_out;
+  Spectrum L_dir = estimate_direct_lighting_importance(r, isect);
+  //L_out = estimate_direct_lighting_hemisphere(r, isect);
+  L_out = at_least_one_bounce_radiance(r, isect); //+ zero_bounce_radiance(r, isect);
+  return L_out - L_dir;
 }
 
 Spectrum PathTracer::raytrace_pixel(size_t x, size_t y) {

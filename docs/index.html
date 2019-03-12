@@ -196,7 +196,11 @@
         <li>1. This is similar to uniform hemisphere sampling, but we only sampling light to the direction of light source.
         So compare to unifor hemisphere sampling, which the outgoing ray will always intersect with non-light source primitives,
         importance sampling will gives us with less error.</li>
-        <li>2. We first iterate over</li>
+        <li>2. We first iterate through all light sources in the scene, then we taking ray samples leaving the hit point to the
+        light source. If the light source is a delta light, we only take one sample. (because the light will be the same from
+        different angles), otherwise, we take \(n\) number of samples randomly from the light source using a probability density
+        function.</li>
+        <li>3. If the sampled outing</li>
     </ul>
 
 
