@@ -16,16 +16,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ad3475a-f0d3-4006-a92d-7d0ec3e33ee7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bbox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/bbox.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bsdf.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/bsdf.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bvh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/bvh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/p4_global_spheres.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/pathtracer" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/pathtracer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/src/CMakeFiles/pathtracer.dir/pathtracer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/src/CMakeFiles/pathtracer.dir/pathtracer.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pathtracer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pathtracer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/static_scene/sphere.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/static_scene/sphere.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/static_scene/triangle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/static_scene/triangle.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -58,7 +53,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="11655" />
+          <entry key="cpp" value="11663" />
           <entry key="html" value="8835" />
         </counts>
       </usages-collector>
@@ -66,7 +61,7 @@
         <counts>
           <entry key="Doxygen file" value="6" />
           <entry key="HTML" value="8835" />
-          <entry key="ObjectiveC" value="11649" />
+          <entry key="ObjectiveC" value="11657" />
         </counts>
       </usages-collector>
     </session>
@@ -77,7 +72,7 @@
         <entry file="file://$PROJECT_DIR$/src/bvh.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="250">
-              <caret line="163" lean-forward="true" selection-start-line="163" selection-end-line="163" />
+              <caret line="163" selection-start-line="163" selection-end-line="163" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
               </folding>
@@ -112,8 +107,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/pathtracer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="748" lean-forward="true" selection-start-line="748" selection-end-line="748" />
+            <state relative-caret-position="-2822">
+              <caret line="695" column="4" selection-start-line="695" selection-start-column="4" selection-end-line="695" selection-end-column="4" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -319,7 +314,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="pathtracer" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-t 16 -s 2048 -l 8 -m 6 -r 480 360 -p 330 60 100 100 ../dae/sky/CBspheres_lambertian.dae" PASS_PARENT_ENVS_2="true" PROJECT_NAME="PathTracer" TARGET_NAME="pathtracer" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="PathTracer" RUN_TARGET_NAME="pathtracer">
+    <configuration name="pathtracer" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-t 16 -s 1 -l 64 -m 6 -f p3_light_64_bunny.png -r 480 360 ../dae/sky/CBbunny.dae" PASS_PARENT_ENVS_2="true" PROJECT_NAME="PathTracer" TARGET_NAME="pathtracer" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="PathTracer" RUN_TARGET_NAME="pathtracer">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -348,19 +343,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1551984983214</updated>
-      <workItem from="1551984985935" duration="75268000" />
+      <workItem from="1551984985935" duration="76872000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75268000" />
+    <option name="totallyTimeSpent" value="76872000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16361417" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16361417" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
@@ -370,7 +365,7 @@
       <window_info anchor="bottom" id="CMake" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.23265307" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23265307" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.28163266" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -551,7 +546,7 @@
     <entry file="file://$PROJECT_DIR$/src/bvh.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
-          <caret line="163" lean-forward="true" selection-start-line="163" selection-end-line="163" />
+          <caret line="163" selection-start-line="163" selection-end-line="163" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
@@ -580,8 +575,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pathtracer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="748" lean-forward="true" selection-start-line="748" selection-end-line="748" />
+        <state relative-caret-position="-2822">
+          <caret line="695" column="4" selection-start-line="695" selection-start-column="4" selection-end-line="695" selection-end-column="4" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
