@@ -200,7 +200,21 @@
         light source. If the light source is a delta light, we only take one sample. (because the light will be the same from
         different angles), otherwise, we take \(n\) number of samples randomly from the light source using a probability density
         function.</li>
-        <li>3. If the sampled outing</li>
+        <li>3. We then set the ray's max_t to be the distance from the hit point to the light source, because we don't want get
+            sample from behind the light source. If the sampled outgoing ray doesn't intersect any primitives, which means the
+        hit point is not blocked, we take the sampled spectrum, multiply with the bsdf on the surface and cosine of the incoming
+        angle. Then we do a Monte Carlo Integration of all the samples we have to finally get the overall irradiance of that
+        surface.</li>
+    </ul>
+    <h3>Notes:</h3>
+    <ul>
+        <li>1. In importance sampling over lights, sometimes the pdf will be 0, which will result white noisy pixel on our
+        rendered. To avoid this, everytime we have 0 pdf, we just discard this sample and resample one.</li>
+        <li>2. Most of the bugs come from not using world coordinate and object coordinate correctly, which is really hard to
+        debug.</li>
+        <li>3. When making new outgoing test ray, it is important to off the origin of the ray a little bit (specifically,
+        by EPS_D * wi_world), to avoid intersecting the ray's origin triangle at the same spot again because of floating
+        point imprecision.</li>
     </ul>
 
 
