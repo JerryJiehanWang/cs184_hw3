@@ -1,22 +1,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async>
+    </script>
+</head>
 <style>  
     div.padded {  
       padding-top: 0px;  
       padding-right: 100px;  
       padding-bottom: 0.25in;  
       padding-left: 100px;  
-    }  
-  </style> 
-<title>Your Name  |  CS 184</title>
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+
+</style>
+<title>Jiehan Wang  |  CS 184</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
 </head>
 <body>
 <br />
 <h1 align="middle">Assignment 3: PathTracer</h1>
-    <h2 align="middle">Your Name</h2>
+    <h2 align="middle">Jiehan Wang</h2>
 
     <div class="padded">
         <p>Use this section to write an overview of the assignment. All of the text in your write-up should be <em>in your own words</em>. If you need to add additional HTML features to this document, you can search the <a href="http://www.w3schools.com/">http://www.w3schools.com/</a> website for instructions. To edit the HTML, you can just copy and paste existing chunks and fill in the text and image file names appropriately.</p>
@@ -24,20 +34,173 @@
         <p>If you are well-versed in web development, feel free to ditch this template and make a better looking page. Just make sure that you include all the components as we've laid them out here. </p>
 
     <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
-        <p>Describe what you did in Part 1. etc...</p>
+        <p>In this part, we model a pinhole camera looking at the -z axis. Then for every pixel on the sample plane
+            \((x, y)\), we first find their normalized value in respect to the sample buffer's width and height. Then
+            we can use the normalized \((x, y)\), to find the corresponding position of the pixel on the camera plane.
+         By this, we can specify a ray, which has an origin vector same as the camera's position, and a direction
+            vector corresponding to the \((x, y)\) position in the camera plane ( we need to use the matrix c2w to
+            convert them to the world coordinates, and them normalized them.)
+        </p>
+
+        <p>
+            Once we have the ray, the next step is to intersect with primitives. There are two primitives we need
+            to consider: triangle and sphere. We use \(t\) to denote the length of the ray. For triangle, we first
+            need to see whether \(t\) is positive, and whether the intersection \(o + t * d\) is inside the triangle
+            by calculating the barycentric coordinates of that triangle using Moller Trumbore algorithm. For Sphere,
+            there are possibly at most two intersections for a ray to intersect a sphere. We denote them as \((t1, t2)\).
+            We use the formula \((o + t * d - c)^2 - R^2\) to calculate \(t1, t2\). If there are no real solutions or both
+            \(t1\) and \(t2\) are negative, it means the ray doesn't intersect with the sphere. If one of the solution is
+            negative, it means the ray origin is inside the sphere, which we don't consider in this project. If there are
+            solutions, we take the smaller one to compute our intersection point.
+        </p>
+        <br>
+        <h3>Triangle intersection steps:</h3>
+        <ul>
+
+            <li>1. Get the positions \(P\) and Barycentric coordinates \(N\) of the vertices of triangle, as well as
+                the origin and direction vector of the ray.</li>
+            <li>2. Build and solve the system of equations according to Moller Trumbore algorithm, get \(t, b0, b1, b2\),
+                where \(b0, b1, b2\) are the barycentric position of the intersection points.</li>
+            <li>3. Test if (\t\) falls in the range\([min_t, max_t]\) and all \(b\) falls in the range \([0, 1]\) to
+                make sure there is an intersection and it falls inside the triangle.</li>
+            <li>4. If there's a intersection, update ray's max_t to \(t\) and populate the correct attribute to
+                Intersection object.</li>
+        </ul>
+        <br>
+
+        <h3>Sphere intersection steps:</h3>
+        <ul>
+            <li>1. Get the center and radius of the sphere, as well as the origin and direction vector of the ray.</li>
+            <li>2. Build and solve the quadratic formula to get the solutions, \(t1, t2\).</li>
+            <li>3. Make sure the formula actually has solution, otherwise it means there's no intersection.</li>
+            <li>4. Take the smaller t, and use this to calculate the intersection point. Update the ray's max_t
+                accordingly, and populate the correct attributes to the Intersection object.</li>
+        </ul>
+
         <div align="center">
             <table style="width=100%">
                 <tr>
                     <td align="middle">
-                    <img src="images/example_image.png" width="480px" />
-                    <figcaption align="middle">Results Caption: my bunny is the bounciest bunny</figcaption>
+                    <img src="images/p1_spheres.png" width="480px" />
+                    <figcaption align="middle">Spheres</figcaption>
+                    <td align="middle">
+                    <img src="images/p1_gems.png" width="480px" />
+                    <figcaption align="middle">Gems</figcaption>
                 </tr>
             </table>
         </div>
-        <p>Here is an example of how to include a simple formula:</p>
-        <p align="middle"><pre align="middle">a^2 + b^2 = c^2</pre></p>
-        <p>or, alternatively, you can include an SVG image of a LaTex formula.</p>
-        <p>This time it's your job to copy-paste in the rest of the sections :)</p>
+
+    <h2 align="middle">Part 2: Bounding Volume Hierarchy</h2>
+
+    <p>BVH helps us rendering the image more quickly, in a way that if a ray doesn't intersect with the bounding volume,
+        it doesn't intersect with any primitives inside that bounding volume. It takes 1:26.45 to render the cow before
+    implement BVH, and after implementation, it only takes 0.1617s. BVH is a tree-like data structure, where each node
+    is a bounding box, and it has two children, left and right, which are both bounding box. Only the leaf node actually
+    contains the primitives we want to intersect.</p>
+
+    <h3>BVH constructions steps:</h3>
+    <ul>
+        <li>1. Create a root node, creating bounding boxes for every primitive.</li>
+        <li>2. If the number of primitives is less than the max leaf size, then the node is a leaf node. We should
+        return this node.</li>
+        <li>3. Else, we need to split the primitives. We take the midpoint of the largest dimension as our split point,
+        and we recursively create left and right nodes based on the splited primitives, until the nodes contains the
+        number of primitives less than max leaf size.</li>
+        <li>4. In the case where one of the children contains no primitive, we need to avoid it, because it will cause
+        infinite recursion. In this case, we re-compute the midpoint as the average of the centroids of primitives to
+        eliminate the empty child nodes.</li>
+    </ul>
+    <p>
+        After we construct the BVH, in next step we will recursively intersect the BVH using ray.
+    </p>
+
+    <h3>BVH intersections steps:</h3>
+    <ul>
+        <li>1. For every node, test if the ray intersects with the bounding box(detailed explanation later)</li>
+        <li>2. If the ray doesn't intersect with the bounding box, it can't intersect with any primitives in that node,
+        so just return false.</li>
+        <li>2. If the ray does intersect with the bounding box, keep recursively intersects the ray with the node's left
+        and right child, untils it reaches the leaf node.</li>
+        <li>3. If the ray intersect with the bounding box of the leaf node, run the intersection test to every primitives
+        inside that leaf node.</li>
+        <li>4. Returns the closest hit point to the BVH of the ray. We don't explicitly do this, because every time the
+            ray intersects the primitives inside the BVH, it updates its max_t according, and max_t can only decrease.
+        Therefore, the max_t of the ray implicitly store the closet hit point.</li>
+    </ul>
+    <br>
+    <div align="center">
+        <img src="images/bound_box.jpg" width="480px" />
+        <figcaption align="middle">Bounding Box illustration</figcaption>
+    </div>
+
+    <h3> Intersecting Bounding Box Steps</h3>
+    <ul>
+        <li>1. In order to compute the intersection of a bounding box, we can compute \(t\) for each dimensions' slabs,
+        and find the intersection of all \(t\).</li>
+        <li>2. Compute \(tx_{min}, tx_{max}, ty_{min}, ty_{max}, tz_{min}, tz_{max}\), corresponding to \(yz, xy, xz\) slabs.</li>
+        <li>3. \(t_{min} = max(tx_{min}, ty_{min}, tz_{min})\), \(t_{max} = min(tx_{max}, ty_{max}, tz_{max})\)</li>
+        <li>4. If \(t_{min} < t_{max}\) and \([t_{min}, t_{max}]\) falls in the range \([min_t, max_t]\), then it is
+        a valid intersection.</li>
+    </ul>
+    <br>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p2_maxplanck.png" width="480px" />
+                <td align="middle">
+                    <img src="images/CBlucy.png" width="480px" />
+            </tr>
+        </table>
+        <figcaption align="middle">Complex mesh rendering.</figcaption>
+    </div>
+
+    <h3>Time analysis with/without BVH</h3>
+
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/with_BVH.png" width="480px" />
+                    <figcaption align="middle">Rendering cow.dae with BVH implemented.</figcaption>
+                <td align="middle">
+                    <img src="images/without_BVH.png" width="480px" />
+                <figcaption align="middle">Rendering cow.dae without BVH implemented.</figcaption>
+            </tr>
+        </table>
+    </div>
+
+    <p>We can see that with BVH implemented, the total time takes to render cow.dae is greatly reduced. Although
+        it takes time to build the BVH, the time is negligible comparing to the time we save. That's because
+    we can stop keeping testing the ray once we don't intersect the bounding box, which saves a lot of time.
+        While without implementing the BVH, we basically do ray test for every primitives inside the root node.
+    The difference in averaged intersection tests per ray indicates that BVH saves many uncessary ray test.</p>
+
+    <h2 align="middle">Part 3: Direct Illumination</h2>
+
+    <h3>Uniform hemisphere sampling</h3>
+    <ul>
+        <li>1. Basically, we use Monte Carlo Integration to sample the ray from different angles origins from the hitting
+        surface to another direction.</li>
+        <li>2. When the camera ray hits the surface, we sample a new ray (test_ray) to an angle using a probability density function.
+            We then run the intersection test to see if the test_ray intersect with any primitives.</li>
+        <li>3. If test_ray intersections with a primitive, we get the emissions of that primitive, multiplies the reflectance
+        of the hitting surface (bdsf), multiplies the cosine of the angle of the direction of test_ray, and finally divides
+        the probability of choosing the angle. The result we get is the illumination of one single outgoing ray.</li>
+        <li>4. We then sum up all the illumination of outgoing rays we created, and average them to obtain the final hemisphere
+        illumination of that pixel.</li>
+    </ul>
+
+    <h3>Importance sampling by sampling over lights</h3>
+    <ul>
+        <li>1. This is similar to uniform hemisphere sampling, but we only sampling light to the direction of light source.
+        So compare to unifor hemisphere sampling, which the outgoing ray will always intersect with non-light source primitives,
+        importance sampling will gives us with less error.</li>
+        <li>2. We first iterate over</li>
+    </ul>
+
+
+
 
 
 
