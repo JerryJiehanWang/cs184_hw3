@@ -162,10 +162,10 @@
             <tr>
                 <td align="middle">
                     <img src="images/with_BVH.png" width="480px" />
-                    <figcaption align="middle"><i>Rendering cow.dae with BVH implemented.<i/></figcaption>
+                    <figcaption align="middle"><i>Rendering cow.dae with BVH implemented.</i></figcaption>
                 <td align="middle">
                     <img src="images/without_BVH.png" width="480px" />
-                <figcaption align="middle"><i>Rendering cow.dae without BVH implemented.<i/></figcaption>
+                <figcaption align="middle"><i>Rendering cow.dae without BVH implemented.</i></figcaption>
             </tr>
         </table>
     </div>
@@ -223,10 +223,10 @@
         <tr>
             <td align="middle">
                 <img src="images/p3_importance_bunny.png" width="480px" />
-                <figcaption align="middle"><i>Importance sampling over Light<i/></figcaption>
+                <figcaption align="middle"><i>Importance sampling over Light</i></figcaption>
             <td align="middle">
                 <img src="images/p3_importance_dragon.png" width="480px" />
-                <figcaption align="middle"><i>Importance sampling over Light<i/></figcaption>
+                <figcaption align="middle"><i>Importance sampling over Light</i></figcaption>
         </tr>
         <tr>
             <td align="middle">
@@ -235,12 +235,156 @@
         </tr>
     </table>
     </div>
+    <br>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p3_light_1_bunny.png" width="480px" />
+                    <figcaption align="middle"><i>Importance sampling using 1 light ray</i></figcaption>
+                <td align="middle">
+                    <img src="images/p3_light_4_bunny.png" width="480px" />
+                    <figcaption align="middle"><i>Importance sampling using 4 light rays</i></figcaption>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p3_light_16_bunny.png" width="480px" />
+                    <figcaption align="middle"><i>Importance sampling using 16 light rays</i></figcaption>
+                <td align="middle">
+                    <img src="images/p3_light_64_bunny.png" width="480px" />
+                    <figcaption align="middle"><i>Importance sampling using 64 light rays</i></figcaption>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <h3>Difference between uniform hemisphere and importance light sampling.</h3>
+        <p>First, there are more black noise in uniform hemisphere sampling than in importance light sampling.
+        That's because in uniform hemisphere sampling, we uniformly sample light through the hemisphere. And because the
+        light area in the scene is relative small compare to primitives area, it has low probability that the ray will
+        intersect a light source, while in light importance sampling, we specifically sample our rays to the direction
+        of light, which we make sure that every sampling has some radiance, if the hit point is not blocked by other
+        primitives.</p>
+        <p>Second, notice that in uniform hemisphere sampling, there's a bright area around the light source. That's
+        because when we sample for the hit point on the ceiling around
+        the light source, it has some probability that it will intersect the light source. While in the importance sampling,
+        the ceiling is blocked by some primitives.</p>
 
-    <h2 align="middle">Part 3: Direct Illumination</h2>
-        <p>Global illumination is, instead of tracing one bounce of sample ray, we recursively</p>
+    <h2 align="middle">Part 4: Global Illumination</h2>
+        <p>Global illumination is, instead of tracing one bounce of sample ray, we recursively traces multiple bounces
+        of rays until the ray reaches its max depth or the recursive process is terminated by Russian Roulette.</p>
 
+        <ul>
+            <li>1. First compute the direction illumination of the hit point.</li>
+            <li>2. For indirect illumination, we first determine the continue probability of bouncing (usually around 0.6~0.7
+                 to trade-off between the quality of the image and efficiency). Notice that if the ray has not bounced yet, we do at least
+            one bounce regardless of the continue probability.</li>
+            <li>3. If the ray has already bounced, use russian roulette to determine whether to continue. If terminated,
+            just returns the direct illumination of that ray. Otherwise, calling one_or_more_bounce recursively, we create a new outgoing ray, origins from
+            the hit point and to a random direction with a probability determined by a pdf.</li>
+            <li>4. For indirect illumination, we multiply by the bsdf of the hit point, cosine of the incoming angle and divided
+            by the pdf and cpdf before we sum up indirect illumination and direction illumination to get the global illumination of a pixel.</li>
+            <li>5. Finally, we add the illumination emitted by the hit point to get the final global illumination.</li>
+        </ul>
+    <br>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_global_spheres.png" width="480px" />
+                    <figcaption align="middle"><i>Global illumination of CBSpheres</i></figcaption>
+                <td align="middle">
+                    <img src="images/p5_bunny_whole.png" width="480px" />
+                    <figcaption align="middle"><i>Global illumination of CBBunny</i></figcaption>
+            </tr>
+        </table>
+    </div>
 
+    <br>
 
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_sphere_only_direct.png" width="480px" />
+                    <figcaption align="middle"><i>Only direct illumination</i></figcaption>
+                <td align="middle">
+                    <img src="images/p4_sphere_only_indirect.png" width="480px" />
+                    <figcaption align="middle"><i>Only indirect illumination</i></figcaption>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_m_0.png" width="480px" />
+                <td align="middle">
+                    <img src="images/p4_bunny_m_1.png" width="480px" />
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_m_2.png" width="480px" />
+                <td align="middle">
+                    <img src="images/p4_bunny_m_3.png" width="480px" />
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_m_100.png" width="480px" />
+            </tr>
+        </table>
+        <tablecaption align="middle"><i>Global illumination of different ray depth (0, 1, 2, 3, 100)</i></tablecaption>
+    </div>
+    <br>
+    <br>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_s_1.png" width="480px" />
+                <td align="middle">
+                    <img src="images/p4_bunny_s_2.png" width="480px" />
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_s_4.png" width="480px" />
+                <td align="middle">
+                    <img src="images/p4_bunny_s_8.png" width="480px" />
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_s_16.png" width="480px" />
+                <td align="middle">
+                    <img src="images/p4_bunny_s_64.png" width="480px" />
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/p4_bunny_s_1024.png" width="480px" />
+            </tr>
+        </table>
+        <tablecaption align="middle"><i>Global illumination of different number of ray sampling(1, 2, 4, 8, 16, 64, 1024)</i></tablecaption>
+    </div>
+
+    <h2 align="middle">Part 5: Adaptive Sampling</h2>
+    <p>In this part, we basically follow the instruction provided in the spec. We keep track of two variable,
+        \(s_1 = \sum_{k=1}^{n}x_k\), \(s_2 = \sum_{k=1}^{n}{x_k}^2\), where \(x_k\) is the illumination of each ray.
+    Then we count the number of ray, \(n\), we've sampled. If \(n % samplePerBatch == 0\), we determine the convergence.
+    we first calculate \(\mu = \frac{s_1}{n}\), \(\sigma = \frac{1}{n-1} * (s_2 - \frac{{s_1}^2}{n})\). If
+    \( I = 1.96 * \frac{\sigma}{\sqrt{n}} \leq maxTolerance* \mu\), we terminated and return the result. Otherwise, we continue
+    to sample, until it converges on some point or the number of rays we sampled is equal to ns_aa.</p>
+
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/p5_bunny_whole.png" width="480px" />
+                    <figcaption align="middle"><i>Normal rendered image</i></figcaption>
+                <td align="middle">
+                    <img src="images/p5_bunny_whole_rate.png" width="480px" />
+                    <figcaption align="middle"><i>Adaptive Sampling Rate</i></figcaption>
+            </tr>
+        </table>
+    </div>
 
 
 </div>

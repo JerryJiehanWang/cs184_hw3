@@ -692,7 +692,7 @@ Spectrum PathTracer::est_radiance_global_illumination(const Ray &r) {
 
   // TODO (Part 4): Accumulate the "direct" and "indirect" 
   // parts of global illumination into L_out rather than just direct
-  //Spectrum L_dir = estimate_direct_lighting_importance(r, isect);
+  //L_out = estimate_direct_lighting_importance(r, isect);
   //L_out = estimate_direct_lighting_hemisphere(r, isect);
   L_out = at_least_one_bounce_radiance(r, isect) + zero_bounce_radiance(r, isect);
   return L_out;
