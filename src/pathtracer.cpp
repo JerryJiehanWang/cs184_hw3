@@ -630,11 +630,7 @@ Spectrum PathTracer::at_least_one_bounce_radiance(const Ray&r, const Intersectio
   Vector3D hit_p = r.o + r.d * isect.t;
   Vector3D w_out = w2o * (-r.d);
   Spectrum L_out;
-  if (r.depth == max_ray_depth) {
-     L_out = Spectrum();
-  } else {
-    L_out = one_bounce_radiance(r, isect);
-  }
+  L_out = one_bounce_radiance(r, isect);
 
   if (r.depth == 1) {
     return L_out;
@@ -698,7 +694,7 @@ Spectrum PathTracer::est_radiance_global_illumination(const Ray &r) {
   // parts of global illumination into L_out rather than just direct
   //Spectrum L_dir = estimate_direct_lighting_importance(r, isect);
   //L_out = estimate_direct_lighting_hemisphere(r, isect);
-  L_out = at_least_one_bounce_radiance(r, isect); //+ zero_bounce_radiance(r, isect);
+  L_out = at_least_one_bounce_radiance(r, isect) + zero_bounce_radiance(r, isect);
   return L_out;
 }
 

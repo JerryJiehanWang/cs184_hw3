@@ -82,10 +82,10 @@
                 <tr>
                     <td align="middle">
                     <img src="images/p1_spheres.png" width="480px" />
-                    <figcaption align="middle">Spheres</figcaption>
+                        <figcaption align="middle"><i>Spheres</i></figcaption>
                     <td align="middle">
                     <img src="images/p1_gems.png" width="480px" />
-                    <figcaption align="middle">Gems</figcaption>
+                    <figcaption align="middle"><i>Gems</i></figcaption>
                 </tr>
             </table>
         </div>
@@ -130,7 +130,7 @@
     <br>
     <div align="center">
         <img src="images/bound_box.jpg" width="480px" />
-        <figcaption align="middle">Bounding Box illustration</figcaption>
+        <figcaption align="middle"><i>Bounding Box illustration</i></figcaption>
     </div>
 
     <h3> Intersecting Bounding Box Steps</h3>
@@ -152,7 +152,7 @@
                     <img src="images/CBlucy.png" width="480px" />
             </tr>
         </table>
-        <figcaption align="middle">Complex mesh rendering.</figcaption>
+        <figcaption align="middle"><i>Complex mesh rendering.</i></figcaption>
     </div>
 
     <h3>Time analysis with/without BVH</h3>
@@ -162,10 +162,10 @@
             <tr>
                 <td align="middle">
                     <img src="images/with_BVH.png" width="480px" />
-                    <figcaption align="middle">Rendering cow.dae with BVH implemented.</figcaption>
+                    <figcaption align="middle"><i>Rendering cow.dae with BVH implemented.<i/></figcaption>
                 <td align="middle">
                     <img src="images/without_BVH.png" width="480px" />
-                <figcaption align="middle">Rendering cow.dae without BVH implemented.</figcaption>
+                <figcaption align="middle"><i>Rendering cow.dae without BVH implemented.<i/></figcaption>
             </tr>
         </table>
     </div>
@@ -216,22 +216,33 @@
         by EPS_D * wi_world), to avoid intersecting the ray's origin triangle at the same spot again because of floating
         point imprecision.</li>
     </ul>
+    <br>
+
+    <div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+                <img src="images/p3_importance_bunny.png" width="480px" />
+                <figcaption align="middle"><i>Importance sampling over Light<i/></figcaption>
+            <td align="middle">
+                <img src="images/p3_importance_dragon.png" width="480px" />
+                <figcaption align="middle"><i>Importance sampling over Light<i/></figcaption>
+        </tr>
+        <tr>
+            <td align="middle">
+            <img src="images/p3_uniform_bunny.png" width="480px" />
+            <figcaption align="middle"><i>Uniform Hemisphere Sampling<i/></figcaption>
+        </tr>
+    </table>
+    </div>
+
+    <h2 align="middle">Part 3: Direct Illumination</h2>
+        <p>Global illumination is, instead of tracing one bounce of sample ray, we recursively</p>
 
 
 
 
 
-
-    <h2 align="middle">A Few Notes On Webpages</h2>
-        <p>Here are a few problems students have encountered in the past. You will probably encounter these problems at some point, so don't wait until right before the deadline to check that everything is working. Test your website on the instructional machines early!</p>
-        <ul>
-        <li>Your main report page should be called index.html.</li>
-        <li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
-        <li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.jpg"</pre>
-        Do <em>NOT</em> use absolute paths, such as <pre>"/Users/student/Desktop/image.jpg"</pre></li>
-        <li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .jpg != .JPG</pre>
-        <li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
-        <li>And again, test your website on the instructional machines early!</li>
 </div>
 </body>
 </html>
