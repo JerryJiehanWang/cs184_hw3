@@ -23,6 +23,10 @@ using namespace CGL::StaticScene;
 using std::min;
 using std::max;
 
+//Coefficients used for volumetric rendering
+double EXTINCTION = 0.5;
+double SCATTERING = 0.6;
+
 namespace CGL {
 
 PathTracer::PathTracer(size_t ns_aa,
@@ -670,6 +674,73 @@ Spectrum PathTracer::at_least_one_bounce_radiance(const Ray&r, const Intersectio
   return L_out;
 }
 
+Spectrum PathTracer::estimate_particle_lighting_importance(const Ray& r, const double t) {
+  Matrix3x3 o2w;
+  make_coord_space(o2w, Vector3D(0, 0, 1.0e-11));
+  Matrix3x3 w2o = o2w.T();
+
+  // w_out points towards the source of the ray (e.g.,
+  // toward the camera if this is a primary ray)
+  const Vector3D& hit_p = r.o + r.d * t;
+  const Vector3D& w_out = w2o * (-r.d);
+  Spectrum L_out;
+  // Here is where your code for looping over scene lights goes
+  // COMMENT OUT `normal_shading` IN `est_radiance_global_illumination` BEFORE YOU BEGIN
+  for (SceneLight* l : scene->lights) {
+    if (l->is_delta_light()) {
+      Vector3D wi = Vector3D();
+      float distoToLight = 0.0;
+      float pdf = 0.0;
+
+      Spectrum radiance = l->sample_L(hit_p, &wi, &distoToLight, &pdf);
+      Vector3D w_in = w2o * wi;
+      if (w_in.z < 0) {
+        continue;
+      }
+      else {
+        const Ray testr = Ray(EPS_D * wi + hit_p, wi);
+        testr.max_t = distoToLight;
+        Intersection testi2 = Intersection();
+        if (!bvh->intersect(testr, &testi2)) {
+          //if we want to have colored fog, we can do the following
+          Spectrum irradiance = radiance * (0.25 / PI) *Spectrum(1, 0.5, 0.5) * SCATTERING / EXTINCTION / pdf;
+          //Spectrum irradiance = radiance * (0.25 / PI) * SCATTERING / EXTINCTION /pdf;
+          L_out += irradiance;
+        }
+      }
+    }
+    else {
+      Spectrum lightAvg = Spectrum();
+      for (int i = 0; i< ns_area_light; i++) {
+        Vector3D wi = Vector3D();
+        float distoToLight = 0.0;
+        float pdf = 0.0;
+        Spectrum radiance = l->sample_L(hit_p, &wi, &distoToLight, &pdf);
+
+        Vector3D w_in = w2o * wi;
+        if (w_in.z < 0) {
+          continue;
+        }
+        else {
+          const Ray testr = Ray(EPS_D * wi + hit_p, wi);
+          testr.max_t = distoToLight;
+          Intersection testi2 = Intersection();
+          if (!bvh->intersect(testr, &testi2)) {
+            //if we want to have colored fog, we can do the following
+            Spectrum irradiance = radiance * (0.25 / PI) *Spectrum(1, 0.5, 0.5) * SCATTERING / EXTINCTION / pdf;
+            //no fog coloring
+            //Spectrum irradiance = radiance * (0.25 / PI) * scatter /extinction /pdf;
+            lightAvg += irradiance;
+          }
+        }
+      }
+      lightAvg /= (1.0 * ns_area_light);
+      L_out += lightAvg;
+    }
+  }
+  return L_out;
+}
+
 Spectrum PathTracer::est_radiance_global_illumination(const Ray &r) {
   Intersection isect;
   Spectrum L_out;
@@ -694,7 +765,24 @@ Spectrum PathTracer::est_radiance_global_illumination(const Ray &r) {
   // parts of global illumination into L_out rather than just direct
   //L_out = estimate_direct_lighting_importance(r, isect);
   //L_out = estimate_direct_lighting_hemisphere(r, isect);
-  L_out = at_least_one_bounce_radiance(r, isect) + zero_bounce_radiance(r, isect);
+
+//  UniformGridSampler2D sampler = UniformGridSampler2D();
+//  double number = sampler.get_sample()[1];
+//  //TODO: s is always negative.
+//  double s = -log(number/EXTINCTION) / EXTINCTION;
+//  double d = ((isect.t * r.d) - r.o).norm();
+//  //current problem: depth of fog is not correct?
+//  if (s < d) {
+//    //zero bounce also needs to be different?
+//    L_out = estimate_particle_lighting_importance(r, s);
+//  }
+//  else {
+//    //to get the image with only the fog, comment this out
+    L_out = zero_bounce_radiance(r, isect) + at_least_one_bounce_radiance(r, isect);
+//    //cout << "hehe" << endl;
+//  }
+  //TODO: change min(d,s) to s accroding to the paper.
+//  L_out *= EXTINCTION * exp(-EXTINCTION * s); //multiplies by pdf
   return L_out;
 }
 

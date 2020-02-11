@@ -178,6 +178,8 @@ class PathTracer {
   Spectrum estimate_direct_lighting_hemisphere(const Ray &r, const StaticScene::Intersection& isect);
   Spectrum estimate_direct_lighting_importance(const Ray &r, const StaticScene::Intersection& isect);
 
+  Spectrum estimate_particle_lighting_importance(const Ray& r, const double t);
+
   Spectrum est_radiance_global_illumination(const Ray &r); 
   Spectrum zero_bounce_radiance(const Ray &r, const StaticScene::Intersection& isect);
   Spectrum one_bounce_radiance(const Ray &r, const StaticScene::Intersection& isect);
